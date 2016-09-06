@@ -11,8 +11,6 @@
   <link href='http://fonts.googleapis.com/css?family=Qwigley' rel='stylesheet' type='text/css'>
   <link rel="stylesheet" href="css/normalize.css">
   <link rel="stylesheet" href="css/skeleton.css">
-
-
   <link rel="stylesheet" href="css/style.css">
   <script src="js/script.js" charset="utf-8"></script>
   <link rel="icon" type="image/png" href="images/favicon.png">
@@ -21,34 +19,28 @@
 <body>
 
   <div class="container">
-    <div class="row">
-      <div id="header" class="twelve columns">
-        <header>
-          <div id="title">
-            <h1>Twitch Streamers</h1>
-          </div>
-          <div id="toggle">
-            <form action="">
-              <input type="radio" name="whichStreamers" value="all" checked> all<br>
-              <input type="radio" name="whichStreamers" value="online"> online<br>
-              <input type="radio" name="whichStreamers" value="offline"> offline
-            </form>
-          </div>
-        </header>
+    <div class="row" id="header">
+      <div class="twelve columns">
+        <div id="title">
+          <h1>Twitch Streamers</h1>
+        </div>
 
       </div>
+
     </div>
     <div class="row">
       <div class="twelve columns">
-        <section>
-          <article>
-            <img src="images/test.jpeg" alt="">
-            <div class="name"></div>name status
-          </article>
-          <article class="inactive">
-            <img src="images/test.jpeg" alt=""> name status name status
-          </article>
-        </section>
+        <article>
+          <div class="image"><img src="images/test.jpeg" alt=""></div>
+
+          <div class="name">name1 </div>
+          <div class="status">status1 </div>
+        </article>
+        <article class="inactive">
+          <div class="image"><img src="images/test.jpeg" alt=""></div>
+          <div class="name">name2 ame2 ame2 ame2 </div>
+          <div class="status">status2 ame2 ame2 </div>
+        </article>
       </div>
     </div>
 
