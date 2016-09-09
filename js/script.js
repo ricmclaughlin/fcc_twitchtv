@@ -46,21 +46,27 @@ function setStatus(stream, data) {
 
 function createArticle(channel, data) {
   console.log(data);
-  if(channel.status === 'closed') {
+  if (channel.status === 'closed') {
     channel.logo = 'http://dummyimage.com/50/000/f00.jpg&text=X';
-  } else if (data.logo === null && channel.status === 'offline'){
+    channel.url = null;
+  } else if (data.logo === null && channel.status != 'closed'){
     channel.logo = 'https://dummyimage.com/50x50/ecf0e7/5c5457.jpg&text=0x3F';
     channel.url = data.url;
   } else {
     channel.logo = data.logo;
+    channel.game = data.game;
     channel.url = data.url;
   }
   channel.name = data.display_name != null ? data.display_name : channel.name;
 
-  const article = `<div class="image"><img src="${channel.logo}" alt="${channel.name}">\
-  </div><div class="name">${channel.name} </div><div class="status">${channel.status} </div>`
-
-
+  let article = `<div class="image">`
+  article += `<img src="${channel.logo}" alt="${channel.name}"></div>`
+  if (channel.status === 'online') {
+    article += `<div class="name"><a href="${channel.url}">${channel.name} - ${channel.game}</a></div>`
+  } else {
+      article += `<div class="name"><a href="${channel.url}">${channel.name}</a> </div>`
+  }
+  article += `<div class="status"><a href="${channel.url}">${channel.status}</a> </div>`
   return article;
 }
 
