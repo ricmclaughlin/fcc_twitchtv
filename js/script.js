@@ -31,73 +31,77 @@ let streamsList = [{
 }, {
   name: "ESL_SC2"
 }];
-let articles = [];
 
-function createArticle(channel) {
-  const article = `<article>
-    <div class="image"><img src="${channel.logo}" alt="${channel.display_name}"></div>
-    <div class="name">${channel.display_name} </div>
-    <div class="status">${channel.status} </div>
-  </article>`
+function setStatus(stream, data) {
+
+  if (data.stream === null) {
+    stream.status = "offline";
+  } else if (data.stream === undefined) {
+    stream.status = "closed";
+  } else {
+    stream.status = "online";
+  }
+  return stream;
+}
+
+function createArticle(channel, data) {
+  console.log(data);
+  if(channel.status === 'closed') {
+    channel.logo = 'http://dummyimage.com/50/000/f00.jpg&text=X';
+  } else if (data.logo === null && channel.status === 'offline'){
+    channel.logo = 'https://dummyimage.com/50x50/ecf0e7/5c5457.jpg&text=0x3F';
+    channel.url = data.url;
+  } else {
+    channel.logo = data.logo;
+    channel.url = data.url;
+  }
+  channel.name = data.display_name != null ? data.display_name : channel.name;
+
+  const article = `<div class="image"><img src="${channel.logo}" alt="${channel.name}">\
+  </div><div class="name">${channel.name} </div><div class="status">${channel.status} </div>`
+
+
   return article;
 }
 
-function createURL(type, name) {
-  return `https://api.twitch.tv/kraken/${type}/${name}`;
+function styleArticle(channel, article) {
+  if (channel.status !== 'online') {
+    article.classList.add('inactive');
+  }
+  return article;
 }
 
 document.addEventListener("DOMContentLoaded", function() {
-  function setStatus(resJson, stream) {
-    if (resJson.stream === null) {
-      stream.status = "offline";
-    } else if (resJson.stream === undefined) {
-      stream.status = "closed";
-    } else {
-      stream.status = "online";
-      stream.logo = resJson.stream.channel.logo;
+  const onlineDiv = document.getElementById('online');
+  const offlineDiv = document.getElementById('offline');
+  const closedDiv = document.getElementById('closed');
+
+  streamsList.forEach(stream => {
+    function ajax(url) {
+      fetch(url)
+        .then(data => data.json())
+        .then(data => dataGen.next(data))
+        .catch();
     }
-    return stream;
-  }
 
-  function getOfflineDetails(stream) {
-    fetch(stream.channelURL)
-      .then(response => {
-        response.json()
-          .then(resJson => {
-            stream.logo = resJson.logo != null ? resJson.logo : "https://dummyimage.com/50x50/ecf0e7/5c5457.jpg&text=0x3F";
-            stream.name = resJson.display_name != null ? resJson.display_name : stream.name;
-          })
-      })
-      .catch();
-    return stream;
-  }
+    function* steps(stream) {
+      let data = yield ajax(`https://api.twitch.tv/kraken/streams/${stream.name}`);
+      stream = setStatus(stream, data);
+      data = yield ajax(`https://api.twitch.tv/kraken/channels/${stream.name}`);
+      let newArticle = document.createElement('article');
+      newArticle.innerHTML = createArticle(stream, data);
+      newArticle = styleArticle(stream, newArticle);
+      if (stream.status === 'closed') {
+        closedDiv.appendChild(newArticle);
+      } else if (stream.status === 'offline') {
+        offlineDiv.appendChild(newArticle);
+      }
+      else {
+        onlineDiv.appendChild(newArticle);
+      }
+    }
 
-  function processStreams(streamsToProcess) {
-    return new Promise(function(resolve, reject) {
-      streamsToProcess.map(stream => {
-        stream.url = createURL("streams", stream.name);
-        stream.channelURL = createURL("channels", stream.name)
-        fetch(stream.url)
-          .then(response => {
-            response.json()
-              .then(resJson => setStatus(resJson, stream))
-              .then(stream => getOfflineDetails(stream))
-              .then(resolve());
-          })
-          .catch(err => reject(err));
-      });
-    })
-  }
-
-  processStreams(streamsList)
-    .then(() => {
-      articles = streamsList.forEach(stream => createArticle(stream));
-    });
+    let dataGen = steps(stream);
+    dataGen.next();
+  });
 });
-
-
-
-// $("#articles").append(liveStreams);
-// $("#articles").append(offlineStreams);
-// $("#articles").append(closedStreams);
-//
