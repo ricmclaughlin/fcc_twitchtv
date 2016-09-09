@@ -22,5 +22,6 @@ My User Stories are more technical in nature:
 
 Check it out at:
 
-[Twitch API Channel App source](https://github.com/ricmclaughlin/fcc_twitch)
-[Twitch API Channel App Live!](http://ric.mclaughlin.today/fcc_twitch)
+* [Twitch API Channel App source](https://github.com/ricmclaughlin/fcc_twitchtv)
+
+* [Twitch API Channel App Live!](http://ric.mclaughlin.today/fcc_twitchtv)
