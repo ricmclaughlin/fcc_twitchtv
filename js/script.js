@@ -50,7 +50,7 @@ function createArticle(channel, data) {
     channel.logo = 'http://dummyimage.com/50/000/f00.jpg&text=X';
     channel.url = null;
   } else if (data.logo === null && channel.status != 'closed'){
-    channel.logo = 'https://dummyimage.com/50x50/ecf0e7/5c5457.jpg&text=0x3F';
+    channel.logo = 'http://dummyimage.com/50x50/ecf0e7/5c5457.jpg&text=0x3F';
     channel.url = data.url;
   } else {
     channel.logo = data.logo;
